@@ -8,6 +8,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
 
@@ -44,45 +45,45 @@ public class StreamProcessing {
         keyGenericAvroSerde.configure(serdeConfig, true); // `true` for record keys
         final Serde<GenericRecord> valueGenericAvroSerde = new GenericAvroSerde();
         valueGenericAvroSerde.configure(serdeConfig, false); // `false` for record values
-        final Serde<Integer> integerSerde = Serdes.Integer();
+
 
         StreamsBuilder builder = new StreamsBuilder();
 
         KStream<GenericRecord,GenericRecord> basicStream =
-                builder.stream("car-state-test1");
+                builder.stream("car-state-test3");
 
         basicStream.foreach((key,value) -> System.out.println(key + "=>" + value));
 
 
-        KStream<GenericRecord,GenericRecord> fuelStream = basicStream.filter((key, value) ->
-            { boolean recordWithAlerts = false;
-                if ((float) value.get("fuel_level") < 5) {
-                value.put("fuel_alert", true);
-                recordWithAlerts = true;
-            }
-            if ((float) value.get("battery_voltage") < 12) {
-                value.put("battery_alert", true);
-                recordWithAlerts = true;
-            }
-            if ((float) value.get("left_front_ps") < 1.9) {
-                    value.put("left_front_ps_alert", true);
-                    recordWithAlerts = true;
-                }
-            if ((float) value.get("right_front_ps") < 1.9) {
-                    value.put("right_front_ps_alert", true);
-                    recordWithAlerts = true;
-                }
-            if ((float) value.get("left_rear_ps") < 1.9) {
-                    value.put("left_rear_ps_alert", true);
-                    recordWithAlerts = true;
-                }
-            if ((float) value.get("right_rear_ps") < 1.9) {
-                    value.put("right_rear_ps_alert", true);
-                    recordWithAlerts = true;
-                }
-            return recordWithAlerts;});
-
-        fuelStream.to("fuel-alert", Produced.with(keyGenericAvroSerde, valueGenericAvroSerde));
+//        KStream<GenericRecord,GenericRecord> fuelStream = basicStream.filter((key, value) ->
+//            { boolean recordWithAlerts = false;
+//                if ((float) value.get("fuel_level") < 5) {
+//                value.put("fuel_alert", true);
+//                recordWithAlerts = true;
+//            }
+//            if ((float) value.get("battery_voltage") < 12) {
+//                value.put("battery_alert", true);
+//                recordWithAlerts = true;
+//            }
+//            if ((float) value.get("left_front_ps") < 1.9) {
+//                    value.put("left_front_ps_alert", true);
+//                    recordWithAlerts = true;
+//                }
+//            if ((float) value.get("right_front_ps") < 1.9) {
+//                    value.put("right_front_ps_alert", true);
+//                    recordWithAlerts = true;
+//                }
+//            if ((float) value.get("left_rear_ps") < 1.9) {
+//                    value.put("left_rear_ps_alert", true);
+//                    recordWithAlerts = true;
+//                }
+//            if ((float) value.get("right_rear_ps") < 1.9) {
+//                    value.put("right_rear_ps_alert", true);
+//                    recordWithAlerts = true;
+//                }
+//            return recordWithAlerts;});
+//
+//        fuelStream.to("fuel-alert", Produced.with(keyGenericAvroSerde, valueGenericAvroSerde));
 
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), createStreamProperties());

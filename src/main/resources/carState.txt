@@ -1,1 +1,24 @@
-{ "schema": "{\"namespace\":\"example.car\",\"type\":\"record\",\"name\":\"car_status\",\"fields\":[{\"name\":\"vehicle_id\",\"type\":\"int\"},{\"name\":\"vehicle_type\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"left_front_ps\",\"type\":\"float\"},{\"name\":\"right_front_ps\",\"type\":\"float\"},{\"name\":\"left_rear_ps\",\"type\":\"float\"},{\"name\":\"right_rear_ps\",\"type\":\"float\"},{\"name\":\"latitude\",\"type\":\"float\"},{\"name\":\"longitude\",\"type\":\"float\"},{\"name\":\"fuel_level\",\"type\":\"float\"},{\"name\":\"error_code\",\"type\":\"string\"},{\"name\":\"current_speed\",\"type\":\"int\"},{\"name\":\"battery_voltage\",\"type\":\"float\"},{\"name\":\"mileage\",\"type\":\"int\"},{\"name\":\"acceleration\",\"type\":\"float\"}]}" }
+value schema
+{ "schema": "{\"namespace\":\"example.car\",\"type\":\"record\",\"name\":\"car_status\",\"fields\":[{\"name\":\"vehicle_type\",\"type\":\"string\"},{\"name\":\"timestamp\",\"type\":\"long\"},{\"name\":\"left_front_ps\",\"type\":\"float\"},{\"name\":\"right_front_ps\",\"type\":\"float\"},{\"name\":\"left_rear_ps\",\"type\":\"float\"},{\"name\":\"right_rear_ps\",\"type\":\"float\"},{\"name\":\"latitude\",\"type\":\"float\"},{\"name\":\"longitude\",\"type\":\"float\"},{\"name\":\"fuel_level\",\"type\":\"float\"},{\"name\":\"error_code\",\"type\":\"string\"},{\"name\":\"current_speed\",\"type\":\"int\"},{\"name\":\"battery_voltage\",\"type\":\"float\"},{\"name\":\"mileage\",\"type\":\"int\"},{\"name\":\"acceleration\",\"type\":\"float\"}]}" }
+
+key schema
+{ "schema": "{\"type\": \"int\"}" }
+
+append msg
+{ "key_schema_id": 2, "value_schema_id": 3, "records": [{"key":1,"value":
+{"vehicle_type":"suv",
+"timestamp":123123,
+"left_front_ps":1.74,
+"right_front_ps":1,
+"left_rear_ps":2,
+"left_front_ps":1.74,
+"right_rear_ps":1,
+"latitude":34,
+"longitude":1.74,
+"fuel_level":12,
+"error_code":"Muhammad Siddiqi",
+"current_speed":1.74,
+"battery_voltage":1,
+"mileage":2,
+"acceleration":1.74
+}}]}

@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class ConsumerCreator {
 
@@ -30,7 +29,7 @@ public class ConsumerCreator {
     }
 
     public static void main(String[] args) {
-        String topic = "fuel-alert";
+        String topic = "car-state-test1";
         final Consumer<String,GenericRecord> consumer = CreateConsumer();
         consumer.subscribe(Arrays.asList(topic));
 

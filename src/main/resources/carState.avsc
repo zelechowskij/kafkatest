@@ -4,10 +4,6 @@
 "name": "car_status",
         "fields": [
         {
-        "name": "vehicle_id",
-        "type": "int"
-        },
-        {
         "name": "vehicle_type",
         "type": "string"
         },

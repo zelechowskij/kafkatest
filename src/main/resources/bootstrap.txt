@@ -1,0 +1,1 @@
+kafka-topics --create --topic car-state-test2 --bootstrap-server kafka1:19092,kafka2:29092,kafka3:39092 --replication-factor 3 --partitions 3
