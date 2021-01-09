@@ -29,7 +29,7 @@ public class ConsumerCreator {
     }
 
     public static void main(String[] args) {
-        String topic = "car-state-test1";
+        String topic = "fuel-alert";
         final Consumer<String,GenericRecord> consumer = CreateConsumer();
         consumer.subscribe(Arrays.asList(topic));
 

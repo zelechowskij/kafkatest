@@ -1,5 +1,12 @@
+package KafkaStreams;
+
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
+
+import java.sql.ResultSetMetaData;
+import java.util.List;
+import java.util.UUID;
 
 
 public class CassandraConnector {
@@ -27,12 +34,37 @@ public class CassandraConnector {
         cluster.close();
     }
 
+    public StringBuilder getColumns(){
+        StringBuilder sb = new StringBuilder()
+                .append("vehicle_id , ")
+                .append("vehicle_type ,")
+                .append("timestamp ,")
+                .append("left_front_ps , ")
+                .append("right_front_ps , ")
+                .append("left_rear_ps , ")
+                .append("right_rear_ps , ")
+                .append("latitude , ")
+                .append("longitude , ")
+                .append("fuel_level , ")
+                .append("current_speed , ")
+                .append("battery_voltage , ")
+                .append("mileage , ")
+                .append("acceleration , ")
+                .append("fuel_alert ,")
+                .append("battery_alert ,")
+                .append("left_front_ps_alert , ")
+                .append("right_front_ps_alert , ")
+                .append("left_rear_ps_alert , ")
+                .append("right_rear_ps_alert");
+        return sb;
+    }
+
     public void createTable() {
         StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS ")
                 .append(TABLE_NAME).append("(")
                 .append("vehicle_id uuid, ")
-                .append("timestamp timestamp,")
                 .append("vehicle_type text,")
+                .append("timestamp timestamp,")
                 .append("left_front_ps float, ")
                 .append("right_front_ps float, ")
                 .append("left_rear_ps float, ")
@@ -69,28 +101,30 @@ public class CassandraConnector {
 
     public void insertCarStateByID(CarState car) {
         StringBuilder sb = new StringBuilder("INSERT INTO ")
-                .append(TABLE_NAME).append("(id, title) ")
+                .append(TABLE_NAME).append(" (")
+                .append(getColumns())
+                .append(") ")
                 .append("VALUES (").append(car.getVehicle_id())
-                .append(", '").append(car.getTimestamp())
                 .append(", '").append(car.getVehicle_type())
-                .append(", '").append(car.getLeft_front_ps())
-                .append(", '").append(car.getRight_front_ps())
-                .append(", '").append(car.getLeft_rear_ps())
-                .append(", '").append(car.getRight_rear_ps())
-                .append(", '").append(car.getLatitude())
-                .append(", '").append(car.getLongitude())
-                .append(", '").append(car.getFuel_level())
-                .append(", '").append(car.getCurrent_speed())
-                .append(", '").append(car.getBattery_voltage())
-                .append(", '").append(car.getMileage())
-                .append(", '").append(car.getAcceleration())
-                .append(", '").append(car.isFuel_alert())
-                .append(", '").append(car.isBattery_alert())
-                .append(", '").append(car.isLeft_front_ps_alert())
-                .append(", '").append(car.isRight_front_ps_alert())
-                .append(", '").append(car.isLeft_rear_ps_alert())
-                .append(", '").append(car.isRight_rear_ps_alert())
-                .append("');");
+                .append("', ").append(car.getTimestamp())
+                .append(", ").append(car.getLeft_front_ps())
+                .append(", ").append(car.getRight_front_ps())
+                .append(", ").append(car.getLeft_rear_ps())
+                .append(", ").append(car.getRight_rear_ps())
+                .append(", ").append(car.getLatitude())
+                .append(", ").append(car.getLongitude())
+                .append(", ").append(car.getFuel_level())
+                .append(", ").append(car.getCurrent_speed())
+                .append(", ").append(car.getBattery_voltage())
+                .append(", ").append(car.getMileage())
+                .append(", ").append(car.getAcceleration())
+                .append(", ").append(car.isFuel_alert())
+                .append(", ").append(car.isBattery_alert())
+                .append(", ").append(car.isLeft_front_ps_alert())
+                .append(", ").append(car.isRight_front_ps_alert())
+                .append(", ").append(car.isLeft_rear_ps_alert())
+                .append(", ").append(car.isRight_rear_ps_alert())
+                .append(");");
 
         String query = sb.toString();
         session.execute(query);
@@ -106,6 +140,16 @@ public class CassandraConnector {
         String keyspaceName = "car";
         schemaRepository.createKeyspace(keyspaceName,"SimpleStrategy",1);
         client.createTable();
+        CarState carState = new CarState(UUID.randomUUID(),"string",2,2,2,2,2,
+                2,2,2,2,2,2,2,true,false,true,false,false,false);
+
+        client.insertCarStateByID(carState);
+        ResultSet result = session.execute("SELECT * FROM car.state;");
+        List rows = result.all();
+        String q1 = rows.toString();
+        System.out.println(q1);
+
+
     }
 
 }

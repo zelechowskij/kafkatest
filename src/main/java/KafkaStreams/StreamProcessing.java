@@ -1,5 +1,6 @@
 package KafkaStreams;
 import Constants.KafkaConstants;
+import com.datastax.driver.core.Session;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.serialization.Serde;
@@ -15,6 +16,7 @@ import org.apache.kafka.streams.kstream.Produced;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 public class StreamProcessing {
 
@@ -47,43 +49,74 @@ public class StreamProcessing {
         valueGenericAvroSerde.configure(serdeConfig, false); // `false` for record values
 
 
+        KeyspaceRepository schemaRepository;
+        Session session;
+        CassandraConnector client = new CassandraConnector();
+        client.connect("127.0.0.1", 9042);
+        session = client.getSession();
+        schemaRepository = new KeyspaceRepository(session);
+        String keyspaceName = "car";
+
         StreamsBuilder builder = new StreamsBuilder();
 
         KStream<GenericRecord,GenericRecord> basicStream =
-                builder.stream("car-state-test3");
+                builder.stream("car-state-test1");
 
         basicStream.foreach((key,value) -> System.out.println(key + "=>" + value));
 
 
-//        KStream<GenericRecord,GenericRecord> fuelStream = basicStream.filter((key, value) ->
-//            { boolean recordWithAlerts = false;
-//                if ((float) value.get("fuel_level") < 5) {
-//                value.put("fuel_alert", true);
-//                recordWithAlerts = true;
-//            }
-//            if ((float) value.get("battery_voltage") < 12) {
-//                value.put("battery_alert", true);
-//                recordWithAlerts = true;
-//            }
-//            if ((float) value.get("left_front_ps") < 1.9) {
-//                    value.put("left_front_ps_alert", true);
-//                    recordWithAlerts = true;
-//                }
-//            if ((float) value.get("right_front_ps") < 1.9) {
-//                    value.put("right_front_ps_alert", true);
-//                    recordWithAlerts = true;
-//                }
-//            if ((float) value.get("left_rear_ps") < 1.9) {
-//                    value.put("left_rear_ps_alert", true);
-//                    recordWithAlerts = true;
-//                }
-//            if ((float) value.get("right_rear_ps") < 1.9) {
-//                    value.put("right_rear_ps_alert", true);
-//                    recordWithAlerts = true;
-//                }
-//            return recordWithAlerts;});
-//
-//        fuelStream.to("fuel-alert", Produced.with(keyGenericAvroSerde, valueGenericAvroSerde));
+        KStream<GenericRecord,GenericRecord> fuelStream = basicStream.peek((key, value) ->
+            {
+                if ((float) value.get("fuel_level") < 5) {
+                value.put("fuel_alert", true);
+
+            }
+            if ((float) value.get("battery_voltage") < 12) {
+                value.put("battery_alert", true);
+
+            }
+            if ((float) value.get("left_front_ps") < 1.9) {
+                    value.put("left_front_ps_alert", true);
+
+                }
+            if ((float) value.get("right_front_ps") < 1.9) {
+                    value.put("right_front_ps_alert", true);
+
+                }
+            if ((float) value.get("left_rear_ps") < 1.9) {
+                    value.put("left_rear_ps_alert", true);
+
+                }
+            if ((float) value.get("right_rear_ps") < 1.9) {
+                    value.put("right_rear_ps_alert", true);
+                }
+});
+
+        KStream stream = fuelStream.peek( (key,value) -> client.insertCarStateByID(new CarState(
+                (UUID) key.get("vehicle_id"),
+                value.get("vehicle_type").toString(),
+                (long) value.get("timestamp"),
+                (float) value.get("left_front_ps"),
+                (float) value.get("right_front_ps"),
+                (float) value.get("left_rear_ps"),
+                (float) value.get("right_rear_ps"),
+                (float) value.get("latitude"),
+                (float) value.get("longitude"),
+                (float) value.get("fuel_level"),
+                (int) value.get("current_speed"),
+                (float) value.get("battery_voltage"),
+                (int) value.get("mileage"),
+                (float) value.get("acceleration"),
+                (boolean) value.get("fuel_alert"),
+                (boolean) value.get("battery_alert"),
+                (boolean) value.get("left_front_ps_alert"),
+                (boolean) value.get("right_front_ps_alert"),
+                (boolean) value.get("left_rear_ps_alert"),
+                (boolean) value.get("right_rear_ps_alert")
+
+        )));
+
+        fuelStream.to("fuel-alert", Produced.with(keyGenericAvroSerde, valueGenericAvroSerde));
 
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), createStreamProperties());

@@ -41,6 +41,7 @@ services:
       
   kafka2:
     image: confluentinc/cp-kafka:latest
+
     hostname: kafka2
     depends_on:
       - zookeeper
