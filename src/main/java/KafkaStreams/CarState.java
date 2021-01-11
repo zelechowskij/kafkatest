@@ -1,12 +1,14 @@
 package KafkaStreams;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class CarState {
 
     UUID vehicle_id;
     String vehicle_type;
-    long timestamp;
+    Timestamp timestamp;
     float left_front_ps;
     float right_front_ps;
     float left_rear_ps;
@@ -25,7 +27,7 @@ public class CarState {
     boolean left_rear_ps_alert;
     boolean right_rear_ps_alert;
 
-    public CarState(UUID vehicle_id, String vehicle_type, long timestamp, float left_front_ps, float right_front_ps, float left_rear_ps, float right_rear_ps, float latitude, float longitude, float fuel_level, int current_speed, float battery_voltage, int mileage, float acceleration, boolean fuel_alert, boolean battery_alert, boolean left_front_ps_alert, boolean right_front_ps_alert, boolean left_rear_ps_alert, boolean right_rear_ps_alert) {
+    public CarState(UUID vehicle_id, String vehicle_type, Timestamp timestamp, float left_front_ps, float right_front_ps, float left_rear_ps, float right_rear_ps, float latitude, float longitude, float fuel_level, int current_speed, float battery_voltage, int mileage, float acceleration, boolean fuel_alert, boolean battery_alert, boolean left_front_ps_alert, boolean right_front_ps_alert, boolean left_rear_ps_alert, boolean right_rear_ps_alert) {
         this.vehicle_id = vehicle_id;
         this.vehicle_type = vehicle_type;
         this.timestamp = timestamp;
@@ -56,7 +58,7 @@ public class CarState {
     return vehicle_type;
     }
 
-    public long getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 

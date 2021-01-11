@@ -12,7 +12,7 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
-
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
@@ -93,9 +93,9 @@ public class StreamProcessing {
 });
 
         KStream stream = fuelStream.peek( (key,value) -> client.insertCarStateByID(new CarState(
-                (UUID) key.get("vehicle_id"),
+                UUID.fromString(String.valueOf(key.get("vehicle_id"))) ,
                 value.get("vehicle_type").toString(),
-                (long) value.get("timestamp"),
+                new Timestamp((long) value.get("timestamp")),
                 (float) value.get("left_front_ps"),
                 (float) value.get("right_front_ps"),
                 (float) value.get("left_rear_ps"),

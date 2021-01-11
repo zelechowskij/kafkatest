@@ -8,6 +8,7 @@ import java.sql.ResultSetMetaData;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: rewrite cql statements so they arent so painful to read!
 
 public class CassandraConnector {
 
@@ -106,8 +107,8 @@ public class CassandraConnector {
                 .append(") ")
                 .append("VALUES (").append(car.getVehicle_id())
                 .append(", '").append(car.getVehicle_type())
-                .append("', ").append(car.getTimestamp())
-                .append(", ").append(car.getLeft_front_ps())
+                .append("', '").append(car.getTimestamp())
+                .append("', ").append(car.getLeft_front_ps())
                 .append(", ").append(car.getRight_front_ps())
                 .append(", ").append(car.getLeft_rear_ps())
                 .append(", ").append(car.getRight_rear_ps())
@@ -130,7 +131,7 @@ public class CassandraConnector {
         session.execute(query);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         KeyspaceRepository schemaRepository;
         Session session;
         CassandraConnector client = new CassandraConnector();
@@ -140,14 +141,18 @@ public class CassandraConnector {
         String keyspaceName = "car";
         schemaRepository.createKeyspace(keyspaceName,"SimpleStrategy",1);
         client.createTable();
-        CarState carState = new CarState(UUID.randomUUID(),"string",2,2,2,2,2,
-                2,2,2,2,2,2,2,true,false,true,false,false,false);
+//      CarState carState = new CarState(UUID.randomUUID(),"string",2,2,2,2,2,
+//                2,2,2,2,2,2,2,true,false,true,false,false,false);
 
-        client.insertCarStateByID(carState);
-        ResultSet result = session.execute("SELECT * FROM car.state;");
-        List rows = result.all();
-        String q1 = rows.toString();
-        System.out.println(q1);
+//        client.insertCarStateByID(carState);
+        while (true) {
+            Thread.sleep(500);
+            ResultSet result = session.execute("SELECT timestamp FROM car.state;");
+            List rows = result.all();
+            String q1 = rows.toString();
+            System.out.println(q1);
+        }
+
 
 
     }
